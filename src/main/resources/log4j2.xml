@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration status="DEBUG">
+  <Properties>
+    <Property name="app.name">logging-demo</Property>
+  </Properties>
+
   <Appenders>
-    <Console name="LogToConsole" target="SYSTEM_OUT">
+    <Console name="ConsoleAppender" target="SYSTEM_OUT">
       <PatternLayout
         pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%5p}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=green bold, TRACE=blue} %style{${sys:PID}}{magenta} --- [%15.15t] %style{%-40.40c}{cyan}: %m%n%wEx"/>
     </Console>
@@ -12,30 +16,34 @@
       </PatternLayout>
     </File>-->
 
-    <RollingRandomAccessFile name="LogToRollingFile" fileName="${sys:user.home}/app-logs/app.log"
-                 filePattern="${sys:user.home}/app-logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+    <RollingRandomAccessFile immediateFlush="false" name="FileAppender"
+                             fileName="${sys:user.home}/app-logs/${app.name}.log"
+                             filePattern="${sys:user.home}/app-logs/archive/$${date:yyyy-MM}/${app.name}-%d{MM-dd-yyyy}-%i.log.gz">
       <PatternLayout>
         <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}[%p][%t][%c]: %m%n%wEx</Pattern>
       </PatternLayout>
       <Policies>
         <TimeBasedTriggeringPolicy/>
-        <SizeBasedTriggeringPolicy size="10MB"/>
+        <SizeBasedTriggeringPolicy size="5MB"/>
       </Policies>
       <DefaultRolloverStrategy max="10"/>
     </RollingRandomAccessFile>
 
   </Appenders>
   <Loggers>
+    <!--You can use AsyncLogger and AsyncRoot to use asynchronous feature, but should remove Log4jContextSelector in system property-->
+    <!--Sometimes, mixed async + sync way is better-->
+    <!--This is different to AsyncAppender-->
     <Logger name="ding.nyat" level="INFO" additivity="false">
-      <AppenderRef ref="LogToRollingFile"/>
-      <AppenderRef ref="LogToConsole"/>
+      <AppenderRef ref="FileAppender"/>
+      <AppenderRef ref="ConsoleAppender"/>
     </Logger>
     <Logger name="org.springframework.boot" level="INFO" additivity="false">
-      <AppenderRef ref="LogToConsole"/>
+      <AppenderRef ref="ConsoleAppender"/>
     </Logger>
     <Root level="ERROR">
-      <AppenderRef ref="LogToRollingFile"/>
-      <AppenderRef ref="LogToConsole"/>
+      <AppenderRef ref="FileAppender"/>
+      <AppenderRef ref="ConsoleAppender"/>
     </Root>
   </Loggers>
 </Configuration>
