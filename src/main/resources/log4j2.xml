@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+  <Appenders>
+    <Console name="LogToConsole" target="SYSTEM_OUT">
+      <PatternLayout
+        pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%5p}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=green bold, TRACE=blue} %style{${sys:PID}}{magenta} --- [%15.15t] %style{%-40.40c}{cyan}: %m%n%wEx"/>
+    </Console>
+
+    <!--<File name="LogToFile" fileName="${sys:user.home}/app-logs/app.log">
+      <PatternLayout>
+        <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}[%p][%t][%c]: %m%n%wEx</Pattern>
+      </PatternLayout>
+    </File>-->
+
+    <RollingRandomAccessFile name="LogToRollingFile" fileName="${sys:user.home}/app-logs/app.log"
+                 filePattern="${sys:user.home}/app-logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
+      <PatternLayout>
+        <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}[%p][%t][%c]: %m%n%wEx</Pattern>
+      </PatternLayout>
+      <Policies>
+        <TimeBasedTriggeringPolicy/>
+        <SizeBasedTriggeringPolicy size="10MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="10"/>
+    </RollingRandomAccessFile>
+
+  </Appenders>
+  <Loggers>
+    <Logger name="ding.nyat" level="INFO" additivity="false">
+      <AppenderRef ref="LogToRollingFile"/>
+      <AppenderRef ref="LogToConsole"/>
+    </Logger>
+    <Logger name="org.springframework.boot" level="INFO" additivity="false">
+      <AppenderRef ref="LogToConsole"/>
+    </Logger>
+    <Root level="ERROR">
+      <AppenderRef ref="LogToRollingFile"/>
+      <AppenderRef ref="LogToConsole"/>
+    </Root>
+  </Loggers>
+</Configuration>
