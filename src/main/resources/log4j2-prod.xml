@@ -6,7 +6,7 @@
 
   <Appenders>
     <Console name="ConsoleAppender" target="SYSTEM_OUT">
-      <PatternLayout
+      <PatternLayout disableAnsi="false" 
         pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight{%5p}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=green bold, TRACE=blue} %style{${sys:PID}}{magenta} --- [%15.15t] %style{%-40.40c}{cyan}: %m%n%wEx"/>
     </Console>
 
